@@ -1,5 +1,5 @@
 'use strict';
-import React, {  
+import React, {
   Component,
   StyleSheet,
   Text,
@@ -9,6 +9,7 @@ import React, {
 import BrentTitle from './BrentTitle';
 import ClickCounter from './ClickCounter';
 import LocalStorageTest from './LocalStorageTest';
+import Fetcher from './Fetcher';
 
 export default class App extends Component {
   render() {
@@ -17,6 +18,7 @@ export default class App extends Component {
         <BrentTitle/>
         <ClickCounter/>
         <LocalStorageTest/>
+        <Fetcher/>
       </View>
     );
   }
