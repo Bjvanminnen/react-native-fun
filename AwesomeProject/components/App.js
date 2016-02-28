@@ -8,11 +8,6 @@ import React, {
 
 import { connect } from 'react-redux';
 
-import BrentTitle from './BrentTitle';
-import ClickCounter from './ClickCounter';
-import LocalStorageTest from './LocalStorageTest';
-import Fetcher from './Fetcher';
-
 const styles = StyleSheet.create({
   container: {
     // flex: 1,
@@ -28,10 +23,7 @@ class App extends Component {
     const symbols = this.props.symbols;
     return (
       <View style={styles.container}>
-        <BrentTitle/>
-        <ClickCounter/>
-        <LocalStorageTest/>
-        <Fetcher symbols={symbols}/>
+        <Text>TEXT</Text>
       </View>
     );
   }
