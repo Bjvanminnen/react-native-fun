@@ -14,7 +14,9 @@ export default class Fetcher extends React.Component {
   }
 
   handleClick() {
-    getCurrentPrices(['MSFT', 'SPY'])
+    const symbols = this.props.symbols;
+
+    getCurrentPrices(symbols)
     .then(result => {
       console.log(result);
       this.setState({fetchResult: result});

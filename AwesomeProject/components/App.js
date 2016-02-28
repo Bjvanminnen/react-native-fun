@@ -6,23 +6,12 @@ import React, {
   View
 } from 'react-native';
 
+import { connect } from 'react-redux';
+
 import BrentTitle from './BrentTitle';
 import ClickCounter from './ClickCounter';
 import LocalStorageTest from './LocalStorageTest';
 import Fetcher from './Fetcher';
-
-export default class App extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <BrentTitle/>
-        <ClickCounter/>
-        <LocalStorageTest/>
-        <Fetcher/>
-      </View>
-    );
-  }
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -33,3 +22,21 @@ const styles = StyleSheet.create({
     top: 0
   }
 });
+
+class App extends Component {
+  render() {
+    const symbols = this.props.symbols;
+    return (
+      <View style={styles.container}>
+        <BrentTitle/>
+        <ClickCounter/>
+        <LocalStorageTest/>
+        <Fetcher symbols={symbols}/>
+      </View>
+    );
+  }
+}
+
+const selector = state => state;
+
+export default connect(selector)(App);
