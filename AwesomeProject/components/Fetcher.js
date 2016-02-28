@@ -1,5 +1,6 @@
 import React from 'react-native';
 import { Text, TouchableNativeFeedback, View } from 'react-native';
+import getCurrentPrices from '../js/yahoo';
 
 export default class Fetcher extends React.Component {
   constructor(props) {
@@ -13,11 +14,10 @@ export default class Fetcher extends React.Component {
   }
 
   handleClick() {
-    fetch('http://jsonplaceholder.typicode.com/posts/2')
-    .then(result => result.json())
+    getCurrentPrices(['MSFT', 'SPY'])
     .then(result => {
-      this.setState({fetchResult: result});
       console.log(result);
+      this.setState({fetchResult: result});
     });
   }
 
