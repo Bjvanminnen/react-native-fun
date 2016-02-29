@@ -3,32 +3,53 @@ import React, {
   Component,
   StyleSheet,
   Text,
-  View
+  View,
+  ScrollView
 } from 'react-native';
 
 import { connect } from 'react-redux';
+import _ from 'lodash';
+
+import StockRow from './StockRow';
 
 const styles = StyleSheet.create({
   container: {
     // flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'stretch',
     backgroundColor: '#F5FCFF',
-    top: 0
+    top: 0,
   }
 });
 
 class App extends Component {
   render() {
-    const symbols = this.props.symbols;
+    // const symbols = this.props.symbols;
+    const { data } = this.props;
+
+    const stocks = Object.keys(data).map((symbol, index) => (
+      <StockRow
+        key={index}
+        symbol={symbol}
+        price={data[symbol]}
+      />
+    ));
+
     return (
-      <View style={styles.container}>
-        <Text>TEXT</Text>
-      </View>
+      <ScrollView contentContainerStyle={styles.container}>
+        {stocks}
+      </ScrollView>
     );
   }
 }
 
-const selector = state => state;
+const selector = state => {
+  return {
+    data: {
+      MSFT: 12.12123,
+      AAPL: 13.13
+    }
+  };
+}
 
 export default connect(selector)(App);
