@@ -45,10 +45,7 @@ class App extends Component {
 
 const selector = state => {
   return {
-    data: {
-      MSFT: 12.12123,
-      AAPL: 13.13
-    }
+    data: state.data
   };
 }
 
