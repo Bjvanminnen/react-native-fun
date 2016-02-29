@@ -5,10 +5,7 @@ import {
 
 const initialState = {
   symbols: ['MSFT', 'AAPL', 'SPY'],
-  data: {
-    MSFT: 1.234,
-    AAPL: 2.345,
-    SPY: 3.456
+  data: {    
   }
 };
 

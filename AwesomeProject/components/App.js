@@ -10,7 +10,9 @@ import React, {
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
+import getCurrentPrices from '../js/yahoo';
 import StockRow from './StockRow';
+import { receiveData } from '../redux/actions';
 
 const styles = StyleSheet.create({
   container: {
@@ -23,8 +25,18 @@ const styles = StyleSheet.create({
 });
 
 class App extends Component {
+  componentDidMount() {
+    const { symbols, dispatch } = this.props;
+    // TODO - action middleware?
+    getCurrentPrices(symbols)
+    .then(prices => {
+      Object.keys(prices).forEach(key => {
+        dispatch(receiveData(key, prices[key]));
+      });
+    });
+  }
+
   render() {
-    // const symbols = this.props.symbols;
     const { data } = this.props;
 
     const stocks = Object.keys(data).map((symbol, index) => (
@@ -45,6 +57,7 @@ class App extends Component {
 
 const selector = state => {
   return {
+    symbols: state.symbols,
     data: state.data
   };
 }

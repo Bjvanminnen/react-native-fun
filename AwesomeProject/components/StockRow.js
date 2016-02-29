@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
 export default class StockRow extends React.Component {
   render() {
     const { symbol, price } = this.props;
-    const priceString = numeral(price).format('0.00');
+    const priceString = numeral(price || 0).format('0.00');
     const delta = numeral(0).format('0.00');
 
     return (
