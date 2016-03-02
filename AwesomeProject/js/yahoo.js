@@ -17,6 +17,11 @@ export default function getCurrentPrices(symbols) {
       const { symbol, price } = resource.resource.fields;
       return [symbol, parseFloat(price)];
     });
-    return _.fromPairs(symbolValuePairs);
+    // JavaScriptCore apparently can't handle the +0000
+    const utcTime = result.list.resources[0].resource.fields.utctime.split('+')[0];
+    return {
+      date: utcTime,
+      prices: _.fromPairs(symbolValuePairs)
+    };
   });
 }

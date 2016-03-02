@@ -4,7 +4,8 @@ import React, {
   StyleSheet,
   Text,
   View,
-  ScrollView
+  ScrollView,
+  PullToRefreshViewAndroid
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -25,14 +26,29 @@ const styles = StyleSheet.create({
 });
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.onRefresh = this.onRefresh.bind(this);
+
+    this.state = {
+      date: null
+    };
+  }
+
   componentDidMount() {
+    this.onRefresh();
+  }
+
+  onRefresh() {
     const { symbols, dispatch } = this.props;
     // TODO - action middleware?
     getCurrentPrices(symbols)
-    .then(prices => {
+    .then(({date, prices}) => {
       Object.keys(prices).forEach(key => {
         dispatch(receiveData(key, prices[key]));
       });
+      this.setState({date: date.toString()});
     });
   }
 
@@ -48,9 +64,12 @@ class App extends Component {
     ));
 
     return (
-      <ScrollView contentContainerStyle={styles.container}>
-        {stocks}
-      </ScrollView>
+      <PullToRefreshViewAndroid onRefresh={this.onRefresh}>
+        <ScrollView contentContainerStyle={styles.container}>
+          {stocks}
+          <Text>{this.state.date}</Text>
+        </ScrollView>
+      </PullToRefreshViewAndroid>
     );
   }
 }
