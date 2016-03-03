@@ -4,13 +4,29 @@ import {
 } from './actions';
 
 const initialState = {
-  symbols: ['MSFT', 'AAPL', 'SPY'],
+  symbols: ['MSFT', 'GE', 'JNJ', 'KO', 'PEP', 'MCD', 'PM', 'WM', 'BRK-B',
+    'INTC', 'VOD', 'XOM', 'VIG', 'PG', 'F', 'AAPL', 'VZ', 'SPY'],
   quotes: {
   },
   purchasePrices: {
-    MSFT: 51,
-    AAPL: 102,
-    SPY: 189
+    MSFT: 24.05,
+    GE: 15.74,
+    JNJ: 59.52,
+    KO: 35.12,
+    PEP: 67.09,
+    MCD: 81.84,
+    PM: 65.98,
+    WM: 31.1,
+    'BRK-B': 80.24,
+    INTC: 23,
+    VOD: 49.99,
+    XOM: 86.27,
+    VIG: 58.7,
+    PG: 66.21,
+    F: 12.05,
+    AAPL: 63.85,
+    VZ: 48.12,
+    SPY: 190.10, // 174.81
   }
 };
 

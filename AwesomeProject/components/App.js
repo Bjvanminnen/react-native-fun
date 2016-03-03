@@ -17,11 +17,11 @@ import { receiveData } from '../redux/actions';
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
-    justifyContent: 'center',
-    alignItems: 'stretch',
+    flex: 1
+  },
+  scrollView: {
     backgroundColor: '#F5FCFF',
-    top: 0,
+    top: 0
   }
 });
 
@@ -62,13 +62,15 @@ class App extends Component {
         price={quotes[symbol]}
         delta={quotes[symbol] - purchasePrices[symbol]}
       />
-    ));
+    ));  
 
     return (
-      <PullToRefreshViewAndroid onRefresh={this.onRefresh}>
-        <ScrollView contentContainerStyle={styles.container}>
-          {stocks}
+      <PullToRefreshViewAndroid
+          onRefresh={this.onRefresh}
+          style={styles.container}>
+        <ScrollView contentContainerStyle={styles.scrollView}>
           <Text>{this.state.date}</Text>
+          {stocks}
         </ScrollView>
       </PullToRefreshViewAndroid>
     );
