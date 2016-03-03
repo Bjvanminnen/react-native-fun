@@ -16,9 +16,13 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 24,
-    margin: 0,
-    borderWidth: 1,
-    borderColor: 'red'
+    margin: 0
+  },
+  negative: {
+    color: 'red'
+  },
+  positive: {
+    color: 'green'
   },
   minus: {
     marginRight: 5,
@@ -29,15 +33,18 @@ const styles = StyleSheet.create({
 
 export default class StockRow extends React.Component {
   render() {
-    const { symbol, price } = this.props;
+    const { symbol, price, delta } = this.props;
     const priceString = numeral(price || 0).format('0.00');
-    const delta = numeral(0).format('0.00');
+    const deltaString = numeral(delta || 0).format('0.00');
 
     return (
       <View style={styles.container}>
         <Text style={styles.text}>{symbol}</Text>
         <Text style={styles.text}>{priceString}</Text>
-        <Text style={styles.text}>{delta}</Text>
+        <Text
+            style={[styles.text, delta >= 0 ? styles.positive : styles.negative]}>
+          {deltaString}
+        </Text>
         <TouchableNativeFeedback>
           <View style={styles.minus}>
             <Text style={styles.text}>-</Text>

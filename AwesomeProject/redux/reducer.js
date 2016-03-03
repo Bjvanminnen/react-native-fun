@@ -5,7 +5,12 @@ import {
 
 const initialState = {
   symbols: ['MSFT', 'AAPL', 'SPY'],
-  data: {    
+  quotes: {
+  },
+  purchasePrices: {
+    MSFT: 51,
+    AAPL: 102,
+    SPY: 189
   }
 };
 
@@ -24,8 +29,8 @@ export default function reducer(state = initialState, action) {
     const { symbol, price } = action;
     return {
       ...state,
-      data: {
-        ...state.data,
+      quotes: {
+        ...state.quotes,
         [symbol]: price
       }
     };

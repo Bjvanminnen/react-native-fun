@@ -6,7 +6,8 @@
     "start": "node node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {
-    "react-native": "^0.20.0"
+    "react-native": "^0.20.0",
+    "redux-logger": "^2.6.1"
   },
   "devDependencies": {
     "lodash": "^4.5.1",

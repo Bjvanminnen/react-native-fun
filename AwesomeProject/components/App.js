@@ -53,13 +53,14 @@ class App extends Component {
   }
 
   render() {
-    const { data } = this.props;
+    const { quotes, purchasePrices } = this.props;
 
-    const stocks = Object.keys(data).map((symbol, index) => (
+    const stocks = Object.keys(quotes).map((symbol, index) => (
       <StockRow
         key={index}
         symbol={symbol}
-        price={data[symbol]}
+        price={quotes[symbol]}
+        delta={quotes[symbol] - purchasePrices[symbol]}
       />
     ));
 
@@ -77,7 +78,8 @@ class App extends Component {
 const selector = state => {
   return {
     symbols: state.symbols,
-    data: state.data
+    quotes: state.quotes,
+    purchasePrices: state.purchasePrices
   };
 }
 
