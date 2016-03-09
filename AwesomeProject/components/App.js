@@ -10,18 +10,15 @@ import React, {
 
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import SwipeableViews from 'react-swipeable-views/lib/index.native.animated';
 
 import getCurrentPrices from '../js/yahoo';
-import StockRow from './StockRow';
 import { receiveData } from '../redux/actions';
+import TotalDelta from './TotalDelta';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1
-  },
-  scrollView: {
-    backgroundColor: '#F5FCFF',
-    top: 0
   }
 });
 
@@ -55,23 +52,19 @@ class App extends Component {
   render() {
     const { quotes, purchasePrices } = this.props;
 
-    const stocks = Object.keys(quotes).map((symbol, index) => (
-      <StockRow
-        key={index}
-        symbol={symbol}
-        price={quotes[symbol]}
-        delta={quotes[symbol] - purchasePrices[symbol]}
-      />
-    ));  
-
     return (
       <PullToRefreshViewAndroid
           onRefresh={this.onRefresh}
           style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollView}>
+        <View>
           <Text>{this.state.date}</Text>
-          {stocks}
-        </ScrollView>
+          <SwipeableViews>
+            <TotalDelta quotes={quotes} purchasePrices={purchasePrices}/>
+            <View>
+              <Text>OTHER</Text>
+            </View>
+          </SwipeableViews>
+        </View>
       </PullToRefreshViewAndroid>
     );
   }
