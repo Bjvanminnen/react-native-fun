@@ -4,8 +4,7 @@ import React, {
   StyleSheet,
   Text,
   View,
-  ScrollView,
-  PullToRefreshViewAndroid
+  ScrollView
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -15,10 +14,15 @@ import SwipeableViews from 'react-swipeable-views/lib/index.native.animated';
 import getCurrentPrices from '../js/yahoo';
 import { receiveData } from '../redux/actions';
 import TotalDelta from './TotalDelta';
+import PercentageDelta from './PercentageDelta';
 
 const styles = StyleSheet.create({
-  container: {
+  flex: {
     flex: 1
+  },
+  scrollView: {
+    backgroundColor: '#F5FCFF',
+    top: 0
   }
 });
 
@@ -53,19 +57,25 @@ class App extends Component {
     const { quotes, purchasePrices } = this.props;
 
     return (
-      <PullToRefreshViewAndroid
-          onRefresh={this.onRefresh}
-          style={styles.container}>
-        <View>
-          <Text>{this.state.date}</Text>
-          <SwipeableViews>
-            <TotalDelta quotes={quotes} purchasePrices={purchasePrices}/>
-            <View>
-              <Text>OTHER</Text>
-            </View>
-          </SwipeableViews>
-        </View>
-      </PullToRefreshViewAndroid>
+      <View style={styles.flex}>
+        <Text>{this.state.date}</Text>
+        <SwipeableViews style={styles.flex}>
+          <View style={styles.flex}>
+            <Text>Change Since Purchase</Text>
+            <TotalDelta
+              quotes={quotes}
+              purchasePrices={purchasePrices}
+              onRefresh={this.onRefresh}/>
+          </View>
+          <View style={styles.flex}>
+            <Text>Percentage Change</Text>
+            <PercentageDelta
+              quotes={quotes}
+              purchasePrices={purchasePrices}
+              onRefresh={this.onRefresh}/>
+          </View>
+        </SwipeableViews>
+      </View>
     );
   }
 }
