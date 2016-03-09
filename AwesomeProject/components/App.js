@@ -15,6 +15,7 @@ import getCurrentPrices from '../js/yahoo';
 import { receiveData } from '../redux/actions';
 import TotalDelta from './TotalDelta';
 import PercentageDelta from './PercentageDelta';
+import PercentageDeltaVsIndex from './PercentageDeltaVsIndex';
 
 const styles = StyleSheet.create({
   flex: {
@@ -73,6 +74,14 @@ class App extends Component {
               quotes={quotes}
               purchasePrices={purchasePrices}
               onRefresh={this.onRefresh}/>
+          </View>
+          <View style={styles.flex}>
+            <Text>Percentage Change vs SPY</Text>
+            <PercentageDeltaVsIndex
+              quotes={quotes}
+              purchasePrices={purchasePrices}
+              onRefresh={this.onRefresh}
+              index="SPY"/>
           </View>
         </SwipeableViews>
       </View>

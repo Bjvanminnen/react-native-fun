@@ -1,6 +1,7 @@
 'use strict';
 import React, {
   Component,
+  View,
   ScrollView,
   StyleSheet,
   PullToRefreshViewAndroid
@@ -20,9 +21,18 @@ const styles = StyleSheet.create({
 });
 
 
-export default class PercentageDelta extends Component {
+export default class PercentageDeltaVsIndex extends Component {
   render() {
-    const { quotes, purchasePrices, onRefresh } = this.props;
+    const { quotes, purchasePrices, onRefresh, index } = this.props;
+    if (!quotes || !quotes[index]) {
+      return <View/>
+    }
+
+    // TODO - currently assumes same amount of time for everything
+    // (which is of course false for this set of data)
+    const indexPrice = quotes[index];
+    const indexDelta = indexPrice - purchasePrices[index];
+    console.log(indexPrice, indexDelta);
 
     const stocks = Object.keys(quotes).map((symbol, index) => {
       const price = quotes[symbol];
@@ -32,7 +42,7 @@ export default class PercentageDelta extends Component {
           key={index}
           symbol={symbol}
           price={price}
-          delta={delta / price}
+          delta={delta / price - indexDelta / indexPrice}
           deltaFormat="0.00%"
         />
       );
