@@ -7,7 +7,12 @@ const initialState = {
   symbols: ['MSFT', 'GE', 'JNJ', 'KO', 'PEP', 'MCD', 'PM', 'WM', 'BRK-B',
     'INTC', 'VOD', 'XOM', 'VIG', 'PG', 'F', 'AAPL', 'VZ', 'SPY'],
   quotes: {
+    // MSFT: {
+    //   date: price
+    // }
   },
+  // TODO - might be that these also belong in quotes, and we instead store
+  // purchase dates  
   purchasePrices: {
     MSFT: 24.05,
     GE: 15.74,
@@ -42,12 +47,15 @@ export default function reducer(state = initialState, action) {
   }
 
   if (action.type === RECEIVE_DATA) {
-    const { symbol, price } = action;
+    const { symbol, price, date } = action;
     return {
       ...state,
       quotes: {
         ...state.quotes,
-        [symbol]: price
+        [symbol]: {
+          ...state.quotes[symbol],
+          [date]: price
+        }
       }
     };
   }

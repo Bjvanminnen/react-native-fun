@@ -48,40 +48,35 @@ class App extends Component {
     getCurrentPrices(symbols)
     .then(({date, prices}) => {
       Object.keys(prices).forEach(key => {
-        dispatch(receiveData(key, prices[key]));
+        dispatch(receiveData(key, prices[key], date.toString()));
       });
       this.setState({date: date.toString()});
     });
   }
 
+  getQuote(symbol, date) {
+    const { quotes } = this.props;
+    if (!quotes[symbol] || quotes[symbol][date] === undefined) {
+      return;
+    }
+    return quotes[symbol][date];
+  }
+
   render() {
-    const { quotes, purchasePrices } = this.props;
+    const { symbols, quotes, purchasePrices } = this.props;
+    const { date } = this.state;
 
     return (
       <View style={styles.flex}>
-        <Text>{this.state.date}</Text>
+        <Text>{date}</Text>
         <SwipeableViews style={styles.flex}>
           <View style={styles.flex}>
             <Text>Change Since Purchase</Text>
             <TotalDelta
-              quotes={quotes}
-              purchasePrices={purchasePrices}
+              symbols={symbols}
+              getEndQuote={symbol => this.getQuote(symbol, date)}
+              getStartQuote={symbol => purchasePrices[symbol]}
               onRefresh={this.onRefresh}/>
-          </View>
-          <View style={styles.flex}>
-            <Text>Percentage Change</Text>
-            <PercentageDelta
-              quotes={quotes}
-              purchasePrices={purchasePrices}
-              onRefresh={this.onRefresh}/>
-          </View>
-          <View style={styles.flex}>
-            <Text>Percentage Change vs SPY</Text>
-            <PercentageDeltaVsIndex
-              quotes={quotes}
-              purchasePrices={purchasePrices}
-              onRefresh={this.onRefresh}
-              index="SPY"/>
           </View>
         </SwipeableViews>
       </View>

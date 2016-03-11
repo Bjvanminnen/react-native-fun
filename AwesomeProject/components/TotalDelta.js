@@ -1,6 +1,7 @@
 'use strict';
 import React, {
   Component,
+  Text,
   ScrollView,
   StyleSheet,
   PullToRefreshViewAndroid
@@ -21,16 +22,21 @@ const styles = StyleSheet.create({
 
 export default class TotalDelta extends Component {
   render() {
-    const { quotes, purchasePrices, onRefresh } = this.props;
+    const { symbols, getEndQuote, getStartQuote, onRefresh } = this.props;
 
-    const stocks = Object.keys(quotes).map((symbol, index) => (
-      <StockRow
+    const stocks = symbols.map((symbol, index) => {
+      const endQuote = getEndQuote(symbol);
+      const startQuote = getStartQuote(symbol);
+      if (!endQuote || !startQuote) {
+        return;
+      }
+      return <StockRow
         key={index}
         symbol={symbol}
-        price={quotes[symbol]}
-        delta={quotes[symbol] - purchasePrices[symbol]}
+        price={endQuote}
+        delta={endQuote - startQuote}
       />
-    ));
+    });
 
     return (
       <PullToRefreshViewAndroid onRefresh={onRefresh} style={styles.flex}>
