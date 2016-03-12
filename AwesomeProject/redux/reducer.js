@@ -1,7 +1,10 @@
 import {
   ADD_SYMBOL,
-  RECEIVE_DATA
+  RECEIVE_DATA,
+  RECEIVE_BATCHED_DATA
 } from './actions';
+
+import _ from 'lodash';
 
 const initialState = {
   symbols: ['MSFT', 'GE', 'JNJ', 'KO', 'PEP', 'MCD', 'PM', 'WM', 'BRK-B',
@@ -12,7 +15,7 @@ const initialState = {
     // }
   },
   // TODO - might be that these also belong in quotes, and we instead store
-  // purchase dates  
+  // purchase dates
   purchasePrices: {
     MSFT: 24.05,
     GE: 15.74,
@@ -35,6 +38,19 @@ const initialState = {
   }
 };
 
+function receiveData(state, {symbol, price, date}) {
+  return {
+    ...state,
+    quotes: {
+      ...state.quotes,
+      [symbol]: {
+        ...state.quotes[symbol],
+        [date]: price
+      }
+    }
+  };
+}
+
 export default function reducer(state = initialState, action) {
   if (action.type === ADD_SYMBOL) {
     const { symbol } = action;
@@ -48,16 +64,21 @@ export default function reducer(state = initialState, action) {
 
   if (action.type === RECEIVE_DATA) {
     const { symbol, price, date } = action;
-    return {
-      ...state,
-      quotes: {
-        ...state.quotes,
-        [symbol]: {
-          ...state.quotes[symbol],
-          [date]: price
-        }
-      }
-    };
+    return receiveData(state, action);
+  }
+
+  if (action.type === RECEIVE_BATCHED_DATA) {
+    const { prices, date} = action;
+    const symbols = Object.keys(prices);
+    let nextState = state;
+    symbols.forEach(symbol => {
+      nextState = receiveData(nextState, {
+        symbol,
+        price: prices[symbol],
+        date
+      });
+    });
+    return nextState;
   }
   return state;
 }

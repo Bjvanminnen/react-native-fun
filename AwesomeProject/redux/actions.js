@@ -8,3 +8,10 @@ export const receiveData = (symbol, price, date) => ({
   price,
   date
 });
+
+export const RECEIVE_BATCHED_DATA = 'RECEIVE_BATCHED_DATA';
+export const receiveBatchedData = (prices, date) => ({
+  type: RECEIVE_BATCHED_DATA,
+  prices,
+  date
+});

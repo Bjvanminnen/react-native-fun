@@ -12,7 +12,7 @@ import _ from 'lodash';
 import SwipeableViews from 'react-swipeable-views/lib/index.native.animated';
 
 import { getCurrentPrices, getHistoricalPrices } from '../js/yahoo';
-import { receiveData } from '../redux/actions';
+import { receiveBatchedData } from '../redux/actions';
 import TotalDelta from './TotalDelta';
 import PercentageDelta from './PercentageDelta';
 import PercentageDeltaVsIndex from './PercentageDeltaVsIndex';
@@ -59,10 +59,7 @@ class App extends Component {
     // TODO - action middleware?
     getCurrentPrices(symbols)
     .then(({date, prices}) => {
-      // TODO - chunk actions?
-      Object.keys(prices).forEach(key => {
-        dispatch(receiveData(key, prices[key], date.toString()));
-      });
+      dispatch(receiveBatchedData(prices, date));
       this._getHistoricalPrices(symbols, daysBefore(date, 7));
       this.setState({date: date.toString()});
     });
