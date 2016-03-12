@@ -89,7 +89,16 @@ class App extends Component {
         <Text>{dateString}</Text>
         <SwipeableViews style={styles.flex}>
           <View style={styles.flex}>
-            <Text>Weekly Change</Text>
+            <Text>Weekly Percentage Delta</Text>
+            <TotalDelta
+              symbols={symbols}
+              getEndQuote={symbol => this.getQuote(symbol, dateString)}
+              getStartQuote={symbol => this.getQuote(symbol, startDateString)}
+              onRefresh={this.onRefresh}
+              percentage={true}/>
+          </View>
+          <View style={styles.flex}>
+            <Text>Weekly Delta</Text>
             <TotalDelta
               symbols={symbols}
               getEndQuote={symbol => this.getQuote(symbol, dateString)}

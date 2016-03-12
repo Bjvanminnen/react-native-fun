@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
 
 export default class TotalDelta extends Component {
   render() {
-    const { symbols, getEndQuote, getStartQuote, onRefresh } = this.props;
+    const { symbols, getEndQuote, getStartQuote, onRefresh, percentage } = this.props;
 
     const stocks = symbols.map((symbol, index) => {
       const endQuote = getEndQuote(symbol);
@@ -30,11 +30,14 @@ export default class TotalDelta extends Component {
       if (!endQuote || !startQuote) {
         return;
       }
+
+      const divisor = percentage ? startQuote : 1;
       return <StockRow
         key={index}
         symbol={symbol}
         price={endQuote}
-        delta={endQuote - startQuote}
+        delta={numeral(endQuote - startQuote) / divisor}
+        deltaFormat={percentage ? '0.00%' : '0.00'}
       />
     });
 
