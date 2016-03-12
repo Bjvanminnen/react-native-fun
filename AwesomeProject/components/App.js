@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 import SwipeableViews from 'react-swipeable-views/lib/index.native.animated';
 
-import getCurrentPrices from '../js/yahoo';
+import { getCurrentPrices, getHistoricalPrices } from '../js/yahoo';
 import { receiveData } from '../redux/actions';
 import TotalDelta from './TotalDelta';
 import PercentageDelta from './PercentageDelta';
@@ -26,6 +26,10 @@ const styles = StyleSheet.create({
     top: 0
   }
 });
+
+function daysBefore(date, days) {
+  return new Date(date - days * 24 * 60 * 60 * 1000);
+}
 
 class App extends Component {
   constructor(props) {
@@ -42,14 +46,24 @@ class App extends Component {
     this.onRefresh();
   }
 
+  _getHistoricalPrices(symbols, date) {
+    getHistoricalPrices(symbols, date)
+    .then(result => {
+      console.log(result);
+    });
+  }
+
   onRefresh() {
     const { symbols, dispatch } = this.props;
+
     // TODO - action middleware?
     getCurrentPrices(symbols)
     .then(({date, prices}) => {
+      // TODO - chunk actions?
       Object.keys(prices).forEach(key => {
         dispatch(receiveData(key, prices[key], date.toString()));
       });
+      this._getHistoricalPrices(symbols, daysBefore(date, 7));
       this.setState({date: date.toString()});
     });
   }
