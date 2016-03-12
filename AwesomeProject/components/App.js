@@ -27,8 +27,11 @@ const styles = StyleSheet.create({
   }
 });
 
-function daysBefore(date, days) {
-  return new Date(date - days * 24 * 60 * 60 * 1000);
+function daysBefore(dateString, days) {
+  console.log(dateString);
+  const ret = new Date(new Date(dateString) - days * 24 * 60 * 60 * 1000);
+  console.log(ret);
+  return ret;
 }
 
 class App extends Component {
@@ -38,7 +41,7 @@ class App extends Component {
     this.onRefresh = this.onRefresh.bind(this);
 
     this.state = {
-      date: null
+      dateString: null
     };
   }
 
@@ -47,9 +50,11 @@ class App extends Component {
   }
 
   _getHistoricalPrices(symbols, date) {
+    const { dispatch } = this.props;
+
     getHistoricalPrices(symbols, date)
-    .then(result => {
-      console.log(result);
+    .then(prices => {
+      dispatch(receiveBatchedData(prices, date.toString()));
     });
   }
 
@@ -58,35 +63,37 @@ class App extends Component {
 
     // TODO - action middleware?
     getCurrentPrices(symbols)
-    .then(({date, prices}) => {
-      dispatch(receiveBatchedData(prices, date));
-      this._getHistoricalPrices(symbols, daysBefore(date, 7));
-      this.setState({date: date.toString()});
+    .then(({dateString, prices}) => {
+      dispatch(receiveBatchedData(prices, dateString));
+      this._getHistoricalPrices(symbols, daysBefore(dateString, 7));
+      this.setState({dateString});
     });
   }
 
-  getQuote(symbol, date) {
+  getQuote(symbol, dateString) {
     const { quotes } = this.props;
-    if (!quotes[symbol] || quotes[symbol][date] === undefined) {
+    if (!quotes[symbol] || quotes[symbol][dateString] === undefined) {
       return;
     }
-    return quotes[symbol][date];
+    return quotes[symbol][dateString];
   }
 
   render() {
     const { symbols, quotes, purchasePrices } = this.props;
-    const { date } = this.state;
+    const { dateString } = this.state;
+
+    const startDateString = daysBefore(dateString, 7);
 
     return (
       <View style={styles.flex}>
-        <Text>{date}</Text>
+        <Text>{dateString}</Text>
         <SwipeableViews style={styles.flex}>
           <View style={styles.flex}>
-            <Text>Change Since Purchase</Text>
+            <Text>Weekly Change</Text>
             <TotalDelta
               symbols={symbols}
-              getEndQuote={symbol => this.getQuote(symbol, date)}
-              getStartQuote={symbol => purchasePrices[symbol]}
+              getEndQuote={symbol => this.getQuote(symbol, dateString)}
+              getStartQuote={symbol => this.getQuote(symbol, startDateString)}
               onRefresh={this.onRefresh}/>
           </View>
         </SwipeableViews>

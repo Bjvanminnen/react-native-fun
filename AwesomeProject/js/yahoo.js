@@ -36,7 +36,7 @@ export function getCurrentPrices(symbols) {
     // JavaScriptCore apparently can't handle the +0000
     const utcTime = result.list.resources[0].resource.fields.utctime.split('+')[0];
     return {
-      date: utcTime,
+      dateString: new Date(utcTime).toString(),
       prices: _.fromPairs(symbolValuePairs)
     };
   });
@@ -45,7 +45,7 @@ export function getCurrentPrices(symbols) {
 export function getHistoricalPrices(symbols, date) {
   const start = {
     month: date.getMonth(),
-    day: date.getDay(),
+    day: date.getDate(),
     year: date.getYear() + 1900
   };
   const columns = {
@@ -73,8 +73,9 @@ export function getHistoricalPrices(symbols, date) {
     .then(text => {
       return [
         symbol,
-        text.trim().split('\n')[1].split(',')[columns.Close]
+        parseFloat(text.trim().split('\n')[1].split(',')[columns.Close])
       ];
     });
-  }));  
+  }))
+  .then(result => _.fromPairs(result));
 }

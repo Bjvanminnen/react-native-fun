@@ -13,7 +13,7 @@ const initialState = {
     // MSFT: {
     //   date: price
     // }
-  },
+  },  
   // TODO - might be that these also belong in quotes, and we instead store
   // purchase dates
   purchasePrices: {
