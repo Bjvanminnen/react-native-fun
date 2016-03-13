@@ -8,12 +8,12 @@ import _ from 'lodash';
 
 const initialState = {
   symbols: ['MSFT', 'GE', 'JNJ', 'KO', 'PEP', 'MCD', 'PM', 'WM', 'BRK-B',
-    'INTC', 'VOD', 'XOM', 'VIG', 'PG', 'F', 'AAPL', 'VZ', 'SPY'],
+    'INTC', 'VOD', 'XOM', 'VIG', 'PG', 'F', 'TPX', 'AAPL', 'VZ', 'SPY'],
   quotes: {
     // MSFT: {
     //   date: price
     // }
-  },  
+  },
   // TODO - might be that these also belong in quotes, and we instead store
   // purchase dates
   purchasePrices: {
@@ -33,6 +33,7 @@ const initialState = {
     PG: 66.21,
     F: 12.05,
     AAPL: 63.85,
+    TPX: 0,
     VZ: 48.12,
     SPY: 190.10, // 174.81
   }
