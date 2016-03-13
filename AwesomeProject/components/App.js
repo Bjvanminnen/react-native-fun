@@ -14,8 +14,7 @@ import SwipeableViews from 'react-swipeable-views/lib/index.native.animated';
 import { getCurrentPrices, getHistoricalPrices } from '../js/yahoo';
 import { receiveBatchedData } from '../redux/actions';
 import TotalDelta from './TotalDelta';
-import PercentageDelta from './PercentageDelta';
-import PercentageDeltaVsIndex from './PercentageDeltaVsIndex';
+import TotalDeltaVsIndex from './TotalDeltaVsIndex';
 
 const styles = StyleSheet.create({
   flex: {
@@ -96,6 +95,15 @@ class App extends Component {
               getStartQuote={symbol => this.getQuote(symbol, startDateString)}
               onRefresh={this.onRefresh}
               percentage={true}/>
+          </View>
+          <View style={styles.flex}>
+            <Text>Weekly Percentage vs Index</Text>
+            <TotalDeltaVsIndex
+              symbols={symbols}
+              getEndQuote={symbol => this.getQuote(symbol, dateString)}
+              getStartQuote={symbol => this.getQuote(symbol, startDateString)}
+              onRefresh={this.onRefresh}
+              index="SPY"/>
           </View>
           <View style={styles.flex}>
             <Text>Weekly Delta</Text>
