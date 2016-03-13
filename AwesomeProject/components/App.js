@@ -15,6 +15,7 @@ import { getCurrentPrices, getHistoricalPrices } from '../js/yahoo';
 import { receiveBatchedData } from '../redux/actions';
 import TotalDelta from './TotalDelta';
 import TotalDeltaVsIndex from './TotalDeltaVsIndex';
+import CombinedDelta from './CombinedDelta';
 
 const styles = StyleSheet.create({
   flex: {
@@ -28,9 +29,7 @@ const styles = StyleSheet.create({
 
 function daysBefore(dateString, days) {
   console.log(dateString);
-  const ret = new Date(new Date(dateString) - days * 24 * 60 * 60 * 1000);
-  console.log(ret);
-  return ret;
+  return new Date(new Date(dateString) - days * 24 * 60 * 60 * 1000);
 }
 
 class App extends Component {
@@ -65,6 +64,8 @@ class App extends Component {
     .then(({dateString, prices}) => {
       dispatch(receiveBatchedData(prices, dateString));
       this._getHistoricalPrices(symbols, daysBefore(dateString, 7));
+      this._getHistoricalPrices(symbols, daysBefore(dateString, 30));
+      this._getHistoricalPrices(symbols, daysBefore(dateString, 365));
       this.setState({dateString});
     });
   }
@@ -81,18 +82,49 @@ class App extends Component {
     const { symbols, quotes, purchasePrices } = this.props;
     const { dateString } = this.state;
 
-    const startDateString = daysBefore(dateString, 7);
+    const oneWeekAgo = daysBefore(dateString, 7);
+     // TODO - might result in problems on some days, as doesn't guarantee weekday
+    const oneMonthAgo = daysBefore(dateString, 30);
+    const oneYearAgo = daysBefore(dateString, 365);
 
     return (
       <View style={styles.flex}>
         <Text>{dateString}</Text>
         <SwipeableViews style={styles.flex}>
           <View style={styles.flex}>
+            <Text>One week delta</Text>
+            <CombinedDelta
+              symbols={symbols}
+              getEndQuote={symbol => this.getQuote(symbol, dateString)}
+              getStartQuote={symbol => this.getQuote(symbol, oneWeekAgo)}
+              onRefresh={this.onRefresh}
+              index="SPY"/>
+          </View>
+          <View style={styles.flex}>
+            <Text>One month delta</Text>
+            <CombinedDelta
+              symbols={symbols}
+              getEndQuote={symbol => this.getQuote(symbol, dateString)}
+              getStartQuote={symbol => this.getQuote(symbol, oneMonthAgo)}
+              onRefresh={this.onRefresh}
+              index="SPY"/>
+          </View>
+          <View style={styles.flex}>
+            <Text>One year delta</Text>
+            <CombinedDelta
+              symbols={symbols}
+              getEndQuote={symbol => this.getQuote(symbol, dateString)}
+              getStartQuote={symbol => this.getQuote(symbol, oneYearAgo)}
+              onRefresh={this.onRefresh}
+              index="SPY"/>
+          </View>
+          {/*
+          <View style={styles.flex}>
             <Text>Weekly Percentage Delta</Text>
             <TotalDelta
               symbols={symbols}
               getEndQuote={symbol => this.getQuote(symbol, dateString)}
-              getStartQuote={symbol => this.getQuote(symbol, startDateString)}
+              getStartQuote={symbol => this.getQuote(symbol, oneWeekAgo)}
               onRefresh={this.onRefresh}
               percentage={true}/>
           </View>
@@ -101,7 +133,7 @@ class App extends Component {
             <TotalDeltaVsIndex
               symbols={symbols}
               getEndQuote={symbol => this.getQuote(symbol, dateString)}
-              getStartQuote={symbol => this.getQuote(symbol, startDateString)}
+              getStartQuote={symbol => this.getQuote(symbol, oneWeekAgo)}
               onRefresh={this.onRefresh}
               index="SPY"/>
           </View>
@@ -110,9 +142,10 @@ class App extends Component {
             <TotalDelta
               symbols={symbols}
               getEndQuote={symbol => this.getQuote(symbol, dateString)}
-              getStartQuote={symbol => this.getQuote(symbol, startDateString)}
+              getStartQuote={symbol => this.getQuote(symbol, oneWeekAgo)}
               onRefresh={this.onRefresh}/>
           </View>
+          */}
         </SwipeableViews>
       </View>
     );
