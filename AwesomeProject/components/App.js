@@ -16,6 +16,7 @@ import { receiveBatchedData } from '../redux/actions';
 import TotalDelta from './TotalDelta';
 import TotalDeltaVsIndex from './TotalDeltaVsIndex';
 import CombinedDelta from './CombinedDelta';
+import { daysBefore } from '../js/utils';
 
 const styles = StyleSheet.create({
   flex: {
@@ -26,11 +27,6 @@ const styles = StyleSheet.create({
     top: 0
   }
 });
-
-function daysBefore(dateString, days) {
-  console.log(dateString);
-  return new Date(new Date(dateString) - days * 24 * 60 * 60 * 1000);
-}
 
 class App extends Component {
   constructor(props) {
@@ -63,6 +59,7 @@ class App extends Component {
     getCurrentPrices(symbols)
     .then(({dateString, prices}) => {
       dispatch(receiveBatchedData(prices, dateString));
+      this._getHistoricalPrices(symbols, daysBefore(dateString, 1));
       this._getHistoricalPrices(symbols, daysBefore(dateString, 7));
       this._getHistoricalPrices(symbols, daysBefore(dateString, 30));
       this._getHistoricalPrices(symbols, daysBefore(dateString, 365));
@@ -82,8 +79,13 @@ class App extends Component {
     const { symbols, quotes, purchasePrices } = this.props;
     const { dateString } = this.state;
 
+    // TODO - for all of these, we're not guaranteed to get a valid day
+    // TODO - another option would be to ask for the entire range, and then look
+    // for dates
+    // TODO - one day should possibly instead be since open instead of since
+    // previous close
+    const oneDayAgo = daysBefore(dateString, 1);
     const oneWeekAgo = daysBefore(dateString, 7);
-     // TODO - might result in problems on some days, as doesn't guarantee weekday
     const oneMonthAgo = daysBefore(dateString, 30);
     const oneYearAgo = daysBefore(dateString, 365);
 
@@ -91,6 +93,15 @@ class App extends Component {
       <View style={styles.flex}>
         <Text>{dateString}</Text>
         <SwipeableViews style={styles.flex}>
+          <View style={styles.flex}>
+            <Text>One day delta</Text>
+            <CombinedDelta
+              symbols={symbols}
+              getEndQuote={symbol => this.getQuote(symbol, dateString)}
+              getStartQuote={symbol => this.getQuote(symbol, oneDayAgo)}
+              onRefresh={this.onRefresh}
+              index="SPY"/>
+          </View>
           <View style={styles.flex}>
             <Text>One week delta</Text>
             <CombinedDelta

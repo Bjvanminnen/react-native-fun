@@ -1,5 +1,34 @@
 import _ from 'lodash';
 
+import { daysBefore } from './utils';
+
+const InvalidDate = "InvalidDate";
+
+/*
+TODO : WIP for CORS enabled requests
+function yql(query) {
+  const env = 'http://datatables.org/alltables.env';
+  const url = `https://query.yahooapis.com/v1/public/yql?q=${encodeURIComponent(query)}&env=${encodeURIComponent(env)}&format=json`;
+
+  return fetch(url)
+  .then(response => response.json())
+  .then(obj => console.log(obj.query.results));
+}
+
+function yql_current(symbols) {
+  const symbolString = symbols.map(s => `"${s}"`).join(',');
+  const query = `select Symbol, LastTradePriceOnly, LastTradeDate, LastTradeTime from yahoo.finance.quotes ` +
+    `where symbol in (${symbolString})`;
+  return yql(query);
+}
+
+function test() {
+  yql_current(['MSFT', 'AAPL'])
+  .then(result => console.log(result))
+  .catch(err => console.log('err: ', err));
+}
+*/
+
 /**
  * @param {string|string[]} symbols
  * @returns {Promise}
@@ -8,11 +37,6 @@ export function getCurrentPrices(symbols) {
   if (typeof symbols === "string") {
     symbols = [symbols];
   }
-
-  // http://finance.yahoo.com/d/quotes.csv?s=GE+PTR+MSFT&f=snd1l1yr
-
-  // http://finance.yahoo.com/q/hp?s=WU&a=01&b=19&c=2010&d=01&e=19&f=2010&g=d
-
 
   fetch()
   .then(response => response.text())
@@ -42,7 +66,10 @@ export function getCurrentPrices(symbols) {
   });
 }
 
-export function getHistoricalPrices(symbols, date) {
+
+// select * from csv where url="http://ichart.finance.yahoo.com/table.csv?s=MSFT&d=0&e=28&f=2010&g=d&a=3&b=12&c=2009" and columns="Date,Open,High,Low,Close,Volume,AdjClose"
+
+function getHistoricalPricesHelper(symbols, date) {
   const start = {
     month: date.getMonth(),
     day: date.getDate(),
@@ -71,11 +98,26 @@ export function getHistoricalPrices(symbols, date) {
       return response.text();
     })
     .then(text => {
+      const rows = text.trim().split('\n');
+      if (rows.length < 2) {
+        throw InvalidDate;
+      }
       return [
         symbol,
-        parseFloat(text.trim().split('\n')[1].split(',')[columns.Close])
+        parseFloat(rows[1].split(',')[columns.Close])
       ];
     });
   }))
   .then(result => _.fromPairs(result));
+}
+
+// TODO - 1 month ago from 2/16 is failing
+export function getHistoricalPrices(symbols, date) {
+  return getHistoricalPricesHelper(symbols, date)
+  .catch(err => {
+    if (err === InvalidDate) {
+      return getHistoricalPrices(symbols, daysBefore(date, 1));
+    }
+    throw err;
+  });
 }
